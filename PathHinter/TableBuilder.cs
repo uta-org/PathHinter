@@ -7,8 +7,10 @@ namespace PathHinter
 {
     public static class TableBuilder
     {
-        public static void DrawAsTable<T>(this List<T> list, int padding = 3)
+        public static void DrawAsTable<T>(this IEnumerable<T> collection, int padding = 3)
         {
+            var list = collection.ToList();
+
             int maxLength = list.Max(item => item.ToString().Length) + padding;
 
             int columns = (int)Math.Floor((double)Console.WindowWidth / maxLength); // Horizontal

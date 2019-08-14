@@ -7,7 +7,7 @@ namespace PathHinter
 {
     public static class PathHint
     {
-        private enum PathSuggestionStyle
+        public enum PathSuggestionStyle
         {
             Windows,
             Linux
@@ -15,10 +15,15 @@ namespace PathHinter
 
         public static string ReadLine()
         {
-            return ReadLine(string.Empty);
+            return ReadLine(string.Empty, PathSuggestionStyle.Linux);
         }
 
-        public static string ReadLine(string text, string inputRegex = ".*", ConsoleColor hintColor = ConsoleColor.DarkGray)
+        public static string ReadLine(string text)
+        {
+            return ReadLine(text, PathSuggestionStyle.Linux);
+        }
+
+        public static string ReadLine(string text, PathSuggestionStyle style, string inputRegex = ".*", ConsoleColor hintColor = ConsoleColor.DarkGray)
         {
             if (!string.IsNullOrEmpty(text))
                 Console.Write(text);
@@ -48,7 +53,7 @@ namespace PathHinter
 
                     // Load suggestions for current path
                     if (suggestionIsEmpty)
-                        hintSource = DisplayFolders(userInput);
+                        hintSource = DisplayFolders(userInput, style);
 
                     if (hintSource?.Length > 1)
                         userInput = suggestion ?? userInput;
@@ -138,7 +143,7 @@ namespace PathHinter
             return userInput.Any() ? userInput.Remove(userInput.Length - 1, 1) : string.Empty;
         }
 
-        private static string[] DisplayFolders(string path)
+        private static string[] DisplayFolders(string path, PathSuggestionStyle style = PathSuggestionStyle.Linux)
         {
             bool isWinStyle = GetStyle(path) == PathSuggestionStyle.Windows;
             bool isWinPlatform = Environment.OSVersion.Platform == PlatformID.Win32NT;
@@ -149,6 +154,18 @@ namespace PathHinter
 
             if (isWinPlatform)
                 path = ToWinDir(path);
+
+            if (string.IsNullOrEmpty(path))
+            {
+                // Show drives
+                var drives = DriveInfo.GetDrives()
+                                .Select(drive => isWinPlatform && style == PathSuggestionStyle.Linux ? ToUnixDir(drive.Name) : drive.Name)
+                                .ToArray();
+
+                drives.DrawAsTable();
+
+                return drives;
+            }
 
             string subfolder = path.Split(separator).Last().ToLowerInvariant();
             bool isNeedle = false;
@@ -182,9 +199,9 @@ namespace PathHinter
                     return null;
             }
 
-            var dirs = directories.Select(dir => SanitizePath(dir, path)).ToList();
+            var dirs = directories.Select(dir => SanitizePath(dir, path));
 
-            if (dirs.Count > 1)
+            if (dirs.Count() > 1)
                 dirs.DrawAsTable();
 
             if (!isWinStyle && isWinPlatform)
@@ -205,16 +222,24 @@ namespace PathHinter
 
         private static string ToWinDir(string path)
         {
-            if (path.StartsWith("/"))
+            try
             {
-                string drive = path.Substring(1, 1).ToUpperInvariant();
-                path = drive + ":" + path.Substring(2);
+                if (path.StartsWith("/"))
+                {
+                    string drive = path.Substring(1, 1).ToUpperInvariant();
+                    path = drive + ":" + path.Substring(2);
+                }
+
+                if (path.Contains("/"))
+                    path = path.Replace("/", "\\");
+
+                return path;
             }
-
-            if (path.Contains("/"))
-                path = path.Replace("/", "\\");
-
-            return path;
+            catch
+            {
+                // Caused by absolute paths like '/'
+                return string.Empty;
+            }
         }
 
         private static string ToUnixDir(string path)
