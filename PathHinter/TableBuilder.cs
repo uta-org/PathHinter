@@ -7,6 +7,12 @@ namespace PathHinter
 {
     public static class TableBuilder
     {
+        /// <summary>
+        /// Draws a collection of items as a table in the console.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="collection">The collection.</param>
+        /// <param name="padding">The padding.</param>
         public static void DrawAsTable<T>(this IEnumerable<T> collection, int padding = 3)
         {
             var list = collection.ToList();

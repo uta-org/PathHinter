@@ -5,24 +5,47 @@ using System.Text.RegularExpressions;
 
 namespace PathHinter
 {
+    /// <summary>
+    /// The PathHint class
+    /// </summary>
     public static class PathHint
     {
+        /// <summary>
+        /// The Path Suggestion Style enum
+        /// </summary>
         public enum PathSuggestionStyle
         {
             Windows,
             Linux
         }
 
+        /// <summary>
+        /// Reads the line.
+        /// </summary>
+        /// <returns></returns>
         public static string ReadLine()
         {
             return ReadLine(string.Empty, PathSuggestionStyle.Linux);
         }
 
+        /// <summary>
+        /// Reads the line.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns></returns>
         public static string ReadLine(string text)
         {
             return ReadLine(text, PathSuggestionStyle.Linux);
         }
 
+        /// <summary>
+        /// Reads the line.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <param name="style">The style.</param>
+        /// <param name="inputRegex">The input regex.</param>
+        /// <param name="hintColor">Color of the hint.</param>
+        /// <returns></returns>
         public static string ReadLine(string text, PathSuggestionStyle style, string inputRegex = ".*", ConsoleColor hintColor = ConsoleColor.DarkGray)
         {
             if (!string.IsNullOrEmpty(text))
@@ -110,6 +133,12 @@ namespace PathHinter
             return userInput.Any() ? readLine : string.Empty;
         }
 
+        /// <summary>
+        /// Updates the hints.
+        /// </summary>
+        /// <param name="userInput">The user input.</param>
+        /// <param name="suggestionIndex">Index of the suggestion.</param>
+        /// <returns></returns>
         private static string[] UpdateHints(string userInput, out int suggestionIndex)
         {
             // Update hints
@@ -121,6 +150,11 @@ namespace PathHinter
             return hintSource;
         }
 
+        /// <summary>
+        /// Must the reset suggestions?
+        /// </summary>
+        /// <param name="currentSuggestion">The current suggestion.</param>
+        /// <param name="currentSuggestionIndex">Index of the current suggestion.</param>
         private static void MustResetSuggestions(ref string currentSuggestion, ref int currentSuggestionIndex)
         {
             bool isWinStyle = GetStyle(currentSuggestion) == PathSuggestionStyle.Windows;
@@ -138,11 +172,22 @@ namespace PathHinter
             }
         }
 
+        /// <summary>
+        /// Simulates the backspace.
+        /// </summary>
+        /// <param name="userInput">The user input.</param>
+        /// <returns></returns>
         private static string SimulateBackspace(string userInput)
         {
             return userInput.Any() ? userInput.Remove(userInput.Length - 1, 1) : string.Empty;
         }
 
+        /// <summary>
+        /// Displays the folders.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <param name="style">The style.</param>
+        /// <returns></returns>
         private static string[] DisplayFolders(string path, PathSuggestionStyle style = PathSuggestionStyle.Linux)
         {
             bool isWinStyle = GetStyle(path) == PathSuggestionStyle.Windows;
@@ -212,6 +257,12 @@ namespace PathHinter
             return directories;
         }
 
+        /// <summary>
+        /// Sanitizes the path.
+        /// </summary>
+        /// <param name="dir">The dir.</param>
+        /// <param name="path">The path.</param>
+        /// <returns></returns>
         private static string SanitizePath(string dir, string path)
         {
             return dir
@@ -220,6 +271,11 @@ namespace PathHinter
                 .Replace("/", string.Empty);
         }
 
+        /// <summary>
+        /// Converts the path to a Windows styled path
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns></returns>
         private static string ToWinDir(string path)
         {
             try
@@ -242,6 +298,12 @@ namespace PathHinter
             }
         }
 
+        /// <summary>
+        /// Converts the path to a Unix styled path.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentException">Drives can't have 'A' letter. - path</exception>
         private static string ToUnixDir(string path)
         {
             string driveLetter = path[0].ToString().ToLowerInvariant();
@@ -261,6 +323,11 @@ namespace PathHinter
             return path;
         }
 
+        /// <summary>
+        /// Gets the style.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns></returns>
         private static PathSuggestionStyle GetStyle(string path)
         {
             return path.Contains(":\\")
@@ -268,6 +335,9 @@ namespace PathHinter
                 : PathSuggestionStyle.Linux;
         }
 
+        /// <summary>
+        /// Clears the current console line.
+        /// </summary>
         private static void ClearCurrentConsoleLine()
         {
             int currentLineCursor = Console.CursorTop;
