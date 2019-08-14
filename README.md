@@ -1,4 +1,4 @@
-# PathHinter
+# PathHinter  [![NuGet version (PathHinter)](https://img.shields.io/nuget/v/PathHinter.svg?style=flat-square)](https://www.nuget.org/packages/PathHinter/)
 
 > This project reimplements the behaviour for autocompleting paths from 
 a Unix terminal.
