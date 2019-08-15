@@ -1,6 +1,4 @@
-# PathHinter  [![NuGet version 
-(PathHinter)](https://img.shields.io/nuget/v/PathHinter.svg?style=flat-square)](https://www.nuget.org/packages/PathHinter/) 
-[![HitCount](http://hits.dwyl.io/uta-org/PathHinter.svg)](http://hits.dwyl.io/uta-org/PathHinter)
+# PathHinter  [![NuGet version (PathHinter)](https://img.shields.io/nuget/v/PathHinter.svg?style=flat-square)](https://www.nuget.org/packages/PathHinter/) [![HitCount](http://hits.dwyl.io/uta-org/PathHinter.svg)](http://hits.dwyl.io/uta-org/PathHinter)
 
 > This project reimplements the behaviour for autocompleting paths from 
 a Unix terminal.
